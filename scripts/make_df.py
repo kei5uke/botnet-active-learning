@@ -80,8 +80,8 @@ def stratify(df, counts):
     return frame
 
 def main():
-    malware_paths = glob.glob("dataset/malware_bulk/*.csv")
-    benign_paths = glob.glob("dataset/normal_bulk/*.csv")
+    malware_paths = glob.glob("../dataset/malware_bulk/*.csv")
+    benign_paths = glob.glob("../dataset/normal_bulk/*.csv")
     
     # Make a whole df
     df = make_df(malware_paths + benign_paths)
@@ -97,7 +97,7 @@ def main():
       print("LABEL " + str(label) + " SIZE:" + str(df[df['label'] == label].count()[1]))
 
     # Save as pickle
-    save_name = f'df_{df.shape[0]}_{df.shape[1]}.pkl'
+    save_name = f'../df_pickles/df_{df.shape[0]}_{df.shape[1]}.pkl'
     if os.path.exists(save_name):
       print(f'File {save_name} already exists')
       df.to_pickle(save_name+'.copy')
