@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-FILE_INCLUDE_PERCENTAGE = 0.1
+FILE_INCLUDE_PERCENTAGE = 0.2
 
 def make_df(path_list):
     li = []
@@ -86,7 +86,7 @@ def main():
     # Make a whole df
     df = make_df(malware_paths + benign_paths)
     # Stratify the size accordingly
-    df = stratify(df, [75000, 25000, 25000, 25000])
+    df = stratify(df, [90000, 30000, 30000, 30000])
     # Get columns with low-correlation
     left_columns = remove_corr(df[df.columns[:-1]] , 0.8)
     columns = np.append(left_columns, 'label')
