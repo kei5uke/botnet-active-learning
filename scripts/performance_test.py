@@ -1,32 +1,32 @@
 import random
 import sys
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pickle
 from os import makedirs
+from datetime import datetime
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier as rf
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from modAL.models import ActiveLearner
 from modAL.uncertainty import uncertainty_sampling
 
-TEST_RUN = True
+TEST_RUN = False
+TIME = datetime.now().strftime('%d-%m-%Y-%H:%M:%S')
 DF_FILENAME = '../df_pickles/df_180000_20.pkl'
 MULTICLASS = True
 QUERY_NUM = 1000
 REPEAT = 5
 INIT_SEED_PATTERN = [2, 10, 40, 200]
 POOL_SIZE_PATTERN = [1000, 3000, 5000, 7000, 9000, 15000, 50000, 100000]
-RESULT_DIR_NAME = f'uncert_{REPEAT}_times/'
+RESULT_DIR_NAME = f'uncert_{REPEAT}_times_{TIME}/'
 SAVE_PATH = '../result_pickles/' + RESULT_DIR_NAME
 
 if TEST_RUN == True:
-  QUERY_NUM = 10
+  QUERY_NUM = 5
   REPEAT = 3
   INIT_SEED_PATTERN = [10, 15]
-  POOL_SIZE_PATTERN = [17, 18, 19, 20]
+  POOL_SIZE_PATTERN = [17, 18, 19]
   SAVE_PATH = '../result_pickles/test_run/' + RESULT_DIR_NAME
 
 def split_seeds(init_size, pool_size, X_train, y_train):
@@ -63,8 +63,9 @@ def active_learning(X_init, y_init, X_pool, y_pool, X_test, y_test):
   learner = ActiveLearner(estimator=clf, X_training=X_init, y_training=y_init)
 
   y_pred = learner.predict(X_test)
-  score = np.append(precision_recall_fscore_support(y_test, y_pred, average='micro'),
-                    accuracy_score(y_test, y_pred))
+  score = np.append(precision_recall_fscore_support(y_test, y_pred, average='macro'),
+                    precision_recall_fscore_support(y_test, y_pred, average='weighted'))
+  score = np.append(score, accuracy_score(y_test, y_pred))
   history = [score]
   for index in range(QUERY_NUM):
     query_index, query_instance = learner.query(X_pool)
@@ -76,8 +77,9 @@ def active_learning(X_init, y_init, X_pool, y_pool, X_test, y_test):
     X_pool, y_pool = np.delete(X_pool, query_index, axis=0), np.delete(y_pool, query_index)
 
     y_pred = learner.predict(X_test)
-    score = np.append(precision_recall_fscore_support(y_test, y_pred, average='micro'),
-                    accuracy_score(y_test, y_pred))
+    score = np.append(precision_recall_fscore_support(y_test, y_pred, average='macro'),
+                    precision_recall_fscore_support(y_test, y_pred, average='weighted'))
+    score = np.append(score, accuracy_score(y_test, y_pred))
     history.append(score)
     print(f'Query:{index+1} ...')
   print('==========================\n')
@@ -98,6 +100,7 @@ def file_management(history, init_size, pool_size):
     pickle.dump(history, f)
 
 def main():
+  print(f'Start Script: {datetime.now().strftime("%d-%m-%Y-%H:%M:%S")}')
   df = pd.read_pickle(DF_FILENAME)
   X = df.iloc[:,:df.shape[1]-2]
   y = df.iloc[:,df.shape[1]-1]
@@ -129,6 +132,7 @@ def main():
       file_management(history, init_size, pool_size)
 
   print("=== FINISHED ===")
+  print(f'Finished Script: {datetime.now().strftime("%d-%m-%Y-%H:%M:%S")}')
 
 
 
