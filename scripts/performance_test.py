@@ -1,3 +1,4 @@
+import global_variables as g
 import random
 import sys
 import numpy as np
@@ -11,23 +12,26 @@ from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from modAL.models import ActiveLearner
 from modAL.uncertainty import uncertainty_sampling
 
-TEST_RUN = False
+# Global Vars
+QUERY_NUM = g.QUERY_NUM
+REPEAT = g.REPEAT
+INIT_SEED_PATTERN = g.INIT_SEED_PATTERN
+POOL_SIZE_PATTERN = g.POOL_SIZE_PATTERN
+
+# Shared Vars
+TEST_RUN = True
 TIME = datetime.now().strftime('%d-%m-%Y-%H:%M:%S')
 DF_FILENAME = '../df_pickles/df_180000_20.pkl'
 MULTICLASS = True
-QUERY_NUM = 1000
-REPEAT = 5
-INIT_SEED_PATTERN = [2, 10, 40, 200]
-POOL_SIZE_PATTERN = [1000, 3000, 5000, 7000, 9000, 15000, 50000, 100000]
 RESULT_DIR_NAME = f'uncert_{REPEAT}_times_{TIME}/'
-SAVE_PATH = '../result_pickles/' + RESULT_DIR_NAME
+SAVE_DIR = '../result_pickles/' + RESULT_DIR_NAME
 
 if TEST_RUN == True:
   QUERY_NUM = 5
   REPEAT = 3
   INIT_SEED_PATTERN = [10, 15]
   POOL_SIZE_PATTERN = [17, 18, 19]
-  SAVE_PATH = '../result_pickles/test_run/' + RESULT_DIR_NAME
+  SAVE_DIR = '../result_pickles/test_run/' + RESULT_DIR_NAME
 
 def split_seeds(init_size, pool_size, X_train, y_train):
   n_labeled_examples = X_train.shape[0]
@@ -91,11 +95,15 @@ def file_management(history, init_size, pool_size):
   print('===== History Shape =====')
   print(f'History shape:{history.shape}')
   print('=========================\n')
-  dir_name = SAVE_PATH + f'{init_size}_init/'
+
+  # Dir for the init
+  dir_name = SAVE_DIR + f'{init_size}_init/'
+  makedirs(dir_name, exist_ok=True)
+
+  # Pickle name
   file_name = f'{init_size}_init_{pool_size}_pool.pkl'
   path = dir_name + file_name
 
-  makedirs(dir_name, exist_ok=True)
   with open(path, 'wb') as f:
     pickle.dump(history, f)
 
