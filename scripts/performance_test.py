@@ -24,14 +24,14 @@ TIME = datetime.now().strftime('%d-%m-%Y-%H:%M:%S')
 DF_FILENAME = '../df_pickles/df_180000_20.pkl'
 MULTICLASS = True
 RESULT_DIR_NAME = f'uncert_{REPEAT}_times_{TIME}/'
-SAVE_DIR = '../result_pickles/' + RESULT_DIR_NAME
+RESULT_DIR = '../result_pickles/' + RESULT_DIR_NAME
 
 if TEST_RUN == True:
   QUERY_NUM = 5
   REPEAT = 3
   INIT_SEED_PATTERN = [10, 15]
   POOL_SIZE_PATTERN = [17, 18, 19]
-  SAVE_DIR = '../result_pickles/test_run/' + RESULT_DIR_NAME
+  RESULT_DIR = '../result_pickles/test_run/' + RESULT_DIR_NAME
 
 def split_seeds(init_size, pool_size, X_train, y_train):
   n_labeled_examples = X_train.shape[0]
@@ -97,7 +97,7 @@ def file_management(history, init_size, pool_size):
   print('=========================\n')
 
   # Dir for the init
-  dir_name = SAVE_DIR + f'{init_size}_init/'
+  dir_name = RESULT_DIR + f'{init_size}_init/'
   makedirs(dir_name, exist_ok=True)
 
   # Pickle name
