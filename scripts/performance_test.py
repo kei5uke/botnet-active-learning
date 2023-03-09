@@ -23,7 +23,7 @@ COMMITTEE_NUM_PATTERN = g.COMMITTEE_NUM_PATTERN
 TEST_RUN = True
 SAMPLE_METHOD = 'uncert'
 TIME = datetime.now().strftime('%d-%m-%Y-%H:%M:%S')
-DF_FILENAME = '../df_pickles/df_180000_20.pkl'
+DF_FILENAME = '../df_pickles/df_120000_20.pkl'
 MULTICLASS = True
 CLASS_NUM = 4
 RESULT_DIR_NAME = f'{SAMPLE_METHOD}_{REPEAT}_times_{TIME}/'
@@ -38,6 +38,9 @@ if TEST_RUN == True:
   RESULT_DIR_NAME = f'{SAMPLE_METHOD}_{REPEAT}_times_{TIME}/'
   RESULT_DIR = '../result_pickles/test_run/' + RESULT_DIR_NAME
 
+def print_class_num(data):
+  for index, class_num in enumerate(np.unique(data, return_counts=True)[1]):
+    print(f'LABEL {index}: {class_num}')
 
 def get_init_stratified_indices(n_size, class_num, n_labeled_examples, y_train):
   training_indices = []
@@ -73,8 +76,10 @@ def split_seeds(init_size, pool_size, X_train, y_train):
   print('===== Init & Pool Seed =====')
   print(f'X init shape:{X_init.shape}')
   print(f'y init shape:{y_init.shape}')
-  print(f'X pool shape:{X_pool.shape}')
+  print_class_num(y_init)
+  print(f'\nX pool shape:{X_pool.shape}')
   print(f'y pool shape:{y_pool.shape}')
+  print_class_num(y_pool)
   print('============================\n')
 
   return X_init, y_init, X_pool, y_pool
@@ -153,14 +158,16 @@ def main():
 
   X_train, X_test, y_train, y_test = train_test_split(X.to_numpy(),
                                                     y.to_numpy(),
-                                                    test_size=60000,
+                                                    test_size=40000,
                                                     stratify=y)
 
   print('===== Train & Test Data =====')
   print(f'X train shape:{X_train.shape}')
   print(f'y train shape:{y_train.shape}')
-  print(f'X test shape:{X_test.shape}')
+  print_class_num(y_train)
+  print(f'\nX test shape:{X_test.shape}')
   print(f'y test shape:{y_test.shape}')
+  print_class_num(y_test)
   print('=============================\n')
 
   if SAMPLE_METHOD == 'uncert':
