@@ -9,7 +9,7 @@ from datetime import datetime
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier as rf
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
-from modAL.models import ActiveLearner
+from modAL.models import ActiveLearner, Committee
 from modAL.uncertainty import uncertainty_sampling
 
 # Global Vars
@@ -17,13 +17,16 @@ QUERY_NUM = g.QUERY_NUM
 REPEAT = g.REPEAT
 INIT_SEED_PATTERN = g.INIT_SEED_PATTERN
 POOL_SIZE_PATTERN = g.POOL_SIZE_PATTERN
+COMMITTEE_NUM_PATTERN = g.COMMITTEE_NUM_PATTERN
 
 # Shared Vars
 TEST_RUN = True
+SAMPLE_METHOD = 'committee'
 TIME = datetime.now().strftime('%d-%m-%Y-%H:%M:%S')
 DF_FILENAME = '../df_pickles/df_180000_20.pkl'
 MULTICLASS = True
-RESULT_DIR_NAME = f'uncert_{REPEAT}_times_{TIME}/'
+CLASS_NUM = 4
+RESULT_DIR_NAME = f'{SAMPLE_METHOD}_{REPEAT}_times_{TIME}/'
 RESULT_DIR = '../result_pickles/' + RESULT_DIR_NAME
 
 if TEST_RUN == True:
@@ -31,13 +34,29 @@ if TEST_RUN == True:
   REPEAT = 3
   INIT_SEED_PATTERN = [10, 15]
   POOL_SIZE_PATTERN = [17, 18, 19]
+  COMMITTEE_NUM_PATTERN = [2, 3]
   RESULT_DIR = '../result_pickles/test_run/' + RESULT_DIR_NAME
+
+
+def get_init_stratified_indices(init_size, class_num, n_labeled_examples, y_train):
+  training_indices = []
+  equal_num = init_size//class_num
+  for i in range(class_num):
+    for j in range(equal_num):
+      while True:
+        training_indice = np.random.randint(low=0, high=n_labeled_examples)
+        if y_train[training_indice] == i:
+          training_indices.append(training_indice)
+          break
+  if len(training_indices) == 0: raise Exception("Something is wrong")
+  #print(len(training_indices))
+  return training_indices
 
 def split_seeds(init_size, pool_size, X_train, y_train):
   n_labeled_examples = X_train.shape[0]
 
   # Pick Init Seed
-  training_indices = np.random.randint(low=0, high=n_labeled_examples, size=init_size)
+  training_indices = get_init_stratified_indices(init_size, CLASS_NUM, n_labeled_examples, y_train)
   X_init = X_train[training_indices]
   y_init = y_train[training_indices]
 
@@ -60,11 +79,24 @@ def split_seeds(init_size, pool_size, X_train, y_train):
 
   return X_init, y_init, X_pool, y_pool
 
-def active_learning(X_init, y_init, X_pool, y_pool, X_test, y_test):
-  print('===== Active Learning =====')
+def make_learner(sample_method, clf, X_init, y_init, c_num=None):
+  if SAMPLE_METHOD == 'committee':
+    learner_list = list()
+    for member_idx in range(c_num):
+      learner = ActiveLearner(
+          estimator=clf,
+          X_training=X_init, y_training=y_init
+      )
+      learner_list.append(learner)
+    learner = Committee(learner_list=learner_list)
 
-  clf = rf()
-  learner = ActiveLearner(estimator=clf, X_training=X_init, y_training=y_init)
+  elif SAMPLE_METHOD == 'uncert':
+    learner = ActiveLearner(estimator=clf, X_training=X_init, y_training=y_init)
+  
+  return learner
+
+def active_learning(learner, X_init, y_init, X_pool, y_pool, X_test, y_test):
+  print('===== Active Learning =====')
 
   y_pred = learner.predict(X_test)
   score = np.append(precision_recall_fscore_support(y_test, y_pred, average='macro'),
@@ -90,7 +122,7 @@ def active_learning(X_init, y_init, X_pool, y_pool, X_test, y_test):
     
   return history
 
-def file_management(history, init_size, pool_size):
+def file_management(history, init_size, pool_size=None, c_num=None):
   history = np.array(history)
   print('===== History Shape =====')
   print(f'History shape:{history.shape}')
@@ -101,7 +133,10 @@ def file_management(history, init_size, pool_size):
   makedirs(dir_name, exist_ok=True)
 
   # Pickle name
-  file_name = f'{init_size}_init_{pool_size}_pool.pkl'
+  if pool_size != None:
+    file_name = f'{init_size}_init_{pool_size}_pool.pkl'
+  elif c_num != None:
+    file_name = f'{init_size}_init_{c_num}_cnum.pkl'
   path = dir_name + file_name
 
   with open(path, 'wb') as f:
@@ -128,19 +163,37 @@ def main():
   print(f'y test shape:{y_test.shape}')
   print('=============================\n')
 
+  if SAMPLE_METHOD == 'uncert':
+    for init_size in INIT_SEED_PATTERN:
+      for pool_size in POOL_SIZE_PATTERN:
+        history = []
+        for r in range(REPEAT):
+          X_init, y_init, X_pool, y_pool = split_seeds(init_size, pool_size, X_train, y_train)
+          learner = make_learner(SAMPLE_METHOD, rf(), X_init, y_init)
+          result = active_learning(learner, X_init, y_init, X_pool, y_pool, X_test, y_test)
+          history.append(result)
+    
+        # Save result for every size pattern
+        file_management(history, init_size, pool_size)
 
-  for init_size in INIT_SEED_PATTERN:
-    for pool_size in POOL_SIZE_PATTERN:
-      history = []
-      for r in range(REPEAT):
-        X_init, y_init, X_pool, y_pool = split_seeds(init_size, pool_size, X_train, y_train)
-        history.append(active_learning(X_init, y_init, X_pool, y_pool, X_test, y_test))
-  
-      # Save result for every size pattern
-      file_management(history, init_size, pool_size)
+  if SAMPLE_METHOD == 'committee':
+    for init_size in INIT_SEED_PATTERN:
+      pool_size = 7000
+      for c_num in COMMITTEE_NUM_PATTERN:
+        history = []
+        for r in range(REPEAT):
+          X_init, y_init, X_pool, y_pool = split_seeds(init_size, pool_size, X_train, y_train)
+          learner = make_learner(SAMPLE_METHOD, rf(), X_init, y_init, c_num)
+          result = active_learning(learner, X_init, y_init, X_pool, y_pool, X_test, y_test)
+          history.append(result)
+    
+        # Save result for every size pattern
+        file_management(history, init_size, None, c_num)
+
 
   print("=== FINISHED ===")
   print(f'Finished Script: {datetime.now().strftime("%d-%m-%Y-%H:%M:%S")}')
+  print(f'Output pickle path: {RESULT_DIR}')
 
 
 
