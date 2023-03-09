@@ -21,7 +21,7 @@ COMMITTEE_NUM_PATTERN = g.COMMITTEE_NUM_PATTERN
 
 # Shared Vars
 TEST_RUN = True
-SAMPLE_METHOD = 'committee'
+SAMPLE_METHOD = 'uncert'
 TIME = datetime.now().strftime('%d-%m-%Y-%H:%M:%S')
 DF_FILENAME = '../df_pickles/df_180000_20.pkl'
 MULTICLASS = True
@@ -31,16 +31,17 @@ RESULT_DIR = '../result_pickles/' + RESULT_DIR_NAME
 
 if TEST_RUN == True:
   QUERY_NUM = 5
-  REPEAT = 3
-  INIT_SEED_PATTERN = [10, 15]
-  POOL_SIZE_PATTERN = [17, 18, 19]
+  REPEAT = 2
+  INIT_SEED_PATTERN = [4, 8]
+  POOL_SIZE_PATTERN = [12, 16, 20]
   COMMITTEE_NUM_PATTERN = [2, 3]
+  RESULT_DIR_NAME = f'{SAMPLE_METHOD}_{REPEAT}_times_{TIME}/'
   RESULT_DIR = '../result_pickles/test_run/' + RESULT_DIR_NAME
 
 
-def get_init_stratified_indices(init_size, class_num, n_labeled_examples, y_train):
+def get_init_stratified_indices(n_size, class_num, n_labeled_examples, y_train):
   training_indices = []
-  equal_num = init_size//class_num
+  equal_num = n_size//class_num
   for i in range(class_num):
     for j in range(equal_num):
       while True:
@@ -49,7 +50,7 @@ def get_init_stratified_indices(init_size, class_num, n_labeled_examples, y_trai
           training_indices.append(training_indice)
           break
   if len(training_indices) == 0: raise Exception("Something is wrong")
-  #print(len(training_indices))
+  print(len(training_indices))
   return training_indices
 
 def split_seeds(init_size, pool_size, X_train, y_train):
@@ -66,7 +67,7 @@ def split_seeds(init_size, pool_size, X_train, y_train):
 
   # Pick Pool 
   current_pool_size = X_pool.shape[0]
-  pool_indices = np.random.randint(low=0, high=current_pool_size, size=pool_size)
+  pool_indices = get_init_stratified_indices(pool_size, CLASS_NUM, current_pool_size, y_pool)
   X_pool = X_pool[pool_indices]
   y_pool = y_pool[pool_indices]
 
