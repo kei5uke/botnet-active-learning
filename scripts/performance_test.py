@@ -50,7 +50,6 @@ def get_init_stratified_indices(n_size, class_num, n_labeled_examples, y_train):
           training_indices.append(training_indice)
           break
   if len(training_indices) == 0: raise Exception("Something is wrong")
-  print(len(training_indices))
   return training_indices
 
 def split_seeds(init_size, pool_size, X_train, y_train):
