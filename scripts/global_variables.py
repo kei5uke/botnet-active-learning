@@ -1,3 +1,6 @@
+# Dataset
+LABEL_RATIO = [30000, 30000, 30000, 30000]
+
 # AL Setting
 QUERY_NUM = 1000
 REPEAT = 5

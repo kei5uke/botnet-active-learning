@@ -5,8 +5,15 @@ import random
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import global_variables as g
 
+# Global Var
+LABEL_RATIO = g.LABEL_RATIO
+
+# Shared Var
 FILE_INCLUDE_PERCENTAGE = 0.2
+REMOVE_CORR_PER = 0.8
+
 
 def make_df(path_list):
     li = []
@@ -86,9 +93,9 @@ def main():
     # Make a whole df
     df = make_df(malware_paths + benign_paths)
     # Stratify the size accordingly
-    df = stratify(df, [90000, 30000, 30000, 30000])
+    df = stratify(df, LABEL_RATIO)
     # Get columns with low-correlation
-    left_columns = remove_corr(df[df.columns[:-1]] , 0.8)
+    left_columns = remove_corr(df[df.columns[:-1]] , REMOVE_CORR_PER)
     columns = np.append(left_columns, 'label')
     df = df[columns]
 
@@ -100,9 +107,11 @@ def main():
     save_name = f'../df_pickles/df_{df.shape[0]}_{df.shape[1]}.pkl'
     if os.path.exists(save_name):
       print(f'File {save_name} already exists')
-      df.to_pickle(save_name+'.copy')
+      save_name += '.copy' 
+      df.to_pickle(save_name)
     else:
       df.to_pickle(save_name)
+    print(f'Output path: {save_name}')
     
     
 if __name__ == "__main__":
