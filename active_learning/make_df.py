@@ -11,7 +11,7 @@ import global_variables as g
 LABEL_RATIO = g.LABEL_RATIO
 
 # Shared Var
-FILE_INCLUDE_PERCENTAGE = 0.2
+FILE_INCLUDE_PERCENTAGE = 0.3
 REMOVE_CORR_PER = 0.8
 
 
