@@ -15,19 +15,14 @@ def make_learner(sample_method, query_strat, clf, X_init, y_init, c_num=None):
     learner = Committee(learner_list=learner_list,
                         query_strategy=query_strat)
 
-  elif sample_method == 'uncert':
-    learner = ActiveLearner(estimator=clf,
-                            query_strategy=query_strat,
-                            X_training=X_init, y_training=y_init)
-
-  elif sample_method == 'batch':
+  elif sample_method == 'uncert' or sample_method == 'batch':
     learner = ActiveLearner(estimator=clf,
                             query_strategy=query_strat,
                             X_training=X_init, y_training=y_init)
   
   return learner
 
-def active_learning(learner, query_num,  X_init, y_init, X_pool, y_pool, X_test, y_test):
+def active_learning(learner, query_num, X_pool, y_pool, X_test, y_test):
   print('===== Active Learning =====')
 
   y_pred = learner.predict(X_test)

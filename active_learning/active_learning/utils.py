@@ -12,6 +12,7 @@ def print_class_num(data):
 def get_init_stratified_indices(n_size, class_num, n_labeled_examples, y_train):
   training_indices = []
   equal_num = n_size//class_num
+  left = n_size%class_num
   for i in range(class_num):
     for j in range(equal_num):
       while True:
@@ -19,6 +20,10 @@ def get_init_stratified_indices(n_size, class_num, n_labeled_examples, y_train):
         if y_train[training_indice] == i:
           training_indices.append(training_indice)
           break
+  for i in range(left):
+    tp = np.random.randint(low=0, high=n_labeled_examples)
+    training_indices.append(tp)
+  
   if len(training_indices) == 0: raise Exception("Something is wrong")
   return training_indices
 
@@ -66,25 +71,18 @@ def file_management(main_path, history, size, size_name):
   with open(path, 'wb') as f:
     pickle.dump(history, f)
 
-def get_train_test(path, multiclass=True, uci_df_path=''):
+def get_train_test(path, multiclass=True, test_size=3000):
   df = pd.read_pickle(path)
-  X = df.iloc[:,:df.shape[1]-1]
-  y = df.iloc[:,df.shape[1]-1]
+  X = df.iloc[:,:20] # column 0-19: Explanatory var
+  y = df.iloc[:,20] # column 20: Independent var
 
   if multiclass == False:
     y = y.replace([2,3],1)
 
   X_train, X_test, y_train, y_test = train_test_split(X.to_numpy(),
                                                     y.to_numpy(),
-                                                    test_size=40000,
+                                                    test_size=test_size,
                                                     stratify=y)
-
-  if uci_df_path != '':
-    X_test, y_test = None, None
-    df = pd.read_pickle(uci_df_path)
-    df = stratify(df, [20000, 20000, 20000])
-    X_test = df.iloc[:,:df.shape[1]-1].to_numpy()
-    y_test = df.iloc[:,df.shape[1]-1].to_numpy()
                                         
   scaler = StandardScaler()
   X_train = scaler.fit_transform(X_train)

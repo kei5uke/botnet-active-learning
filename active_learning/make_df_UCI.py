@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import global_variables as g
 
-CP_PATH = '../df_pickles/df_120000_21.pkl'
+CP_PATH = '../df_pickles/df_120000_21.pkl.f64'
 
 
 def sqrt_col(col):
@@ -21,7 +21,7 @@ def format_df(df):
   df.columns = df.columns.str.replace('L', '') # L part is deleted
 
   # apply the function to each column in the dataframe
-  df = df.apply(sqrt_col, axis=0)
+  #df = df.apply(sqrt_col, axis=0)
   df.columns = df.columns.str.replace('_variance', '_std') # Now its std
   return df
 
@@ -33,7 +33,7 @@ def make_df(path_list, n_rows):
     df = pd.read_csv(filename,
                       index_col=None,
                       header=0,
-                      dtype=np.float32)
+                      dtype=np.float64)
     df = df.sample(n_rows)
     df['device'] = filename.split('/')[3]
     df['traffic_type'] = filename.split('/')[-1].split('.')[0]
@@ -81,7 +81,7 @@ def main():
     print("LABEL " + str(label) + " SIZE:" + str(df[df['label'] == label].count()[1]))
 
   # Save as pickle
-  save_name = f'../df_pickles/UCI_df_{df.shape[0]}_{df.shape[1]}.pkl'
+  save_name = f'../df_pickles/UCI_df_{df.shape[0]}_{df.shape[1]}_no_mod.pkl'
   if os.path.exists(save_name):
     print(f'File {save_name} already exists')
     save_name += '.copy' 

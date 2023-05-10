@@ -27,9 +27,9 @@ BATCH_PATTERN = g.BATCH_PATTERN
 TEST_RUN = False
 SAMPLE_METHOD = 'batch'
 TIME = datetime.now().strftime('%d-%m-%Y-%H:%M:%S')
-DF_FILENAME = '../../df_pickles/df_120000_21.pkl'
+DF_FILENAME = '../../df_pickles/UCI_90000_23.pkl'
 MULTICLASS = True
-CLASS_NUM = 4
+CLASS_NUM = 3
 RESULT_DEFAULT_PATH  = '../../result_pickles/'
 
 if TEST_RUN == True:
@@ -57,7 +57,7 @@ def main():
         for r in range(REPEAT):
           X_init, y_init, X_pool, y_pool = split_seeds(CLASS_NUM, init_size, pool_size, X_train, y_train)
           learner = make_learner(SAMPLE_METHOD, preset_batch, rf(), X_init, y_init)
-          result = active_learning(learner, q_num, X_init, y_init, X_pool, y_pool, X_test, y_test)
+          result = active_learning(learner, q_num, X_pool, y_pool, X_test, y_test)
           history = history + result
         history = history / REPEAT
   

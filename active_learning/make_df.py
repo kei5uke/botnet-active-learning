@@ -11,8 +11,8 @@ import global_variables as g
 LABEL_RATIO = g.LABEL_RATIO
 
 # Shared Var
-FILE_INCLUDE_PERCENTAGE = 0.3
-REMOVE_CORR_PER = 0.8
+FILE_INCLUDE_PERCENTAGE = 0.2
+REMOVE_CORR_PER = 0.80
 
 
 def make_df(path_list):
@@ -81,7 +81,7 @@ def stratify(df, counts):
     li = []
     for label, count in zip(labels, counts):
         tmp = df[df['label'] == label]
-        tmp = tmp[:count]
+        tmp = tmp.sample(count)
         li.append(tmp)
     frame = pd.concat(li, axis=0, ignore_index=True)
     return frame
