@@ -87,8 +87,8 @@ def stratify(df, counts):
     return frame
 
 def main():
-    malware_paths = glob.glob("../dataset/malware_bulk/*.csv")
-    benign_paths = glob.glob("../dataset/normal_bulk/*.csv")
+    malware_paths = glob.glob("../dataset/MedBIoT_Dataset/malware_bulk/*.csv")
+    benign_paths = glob.glob("../dataset/MedBIoT_Dataset/normal_bulk/*.csv")
     
     # Make a whole df
     df = make_df(malware_paths + benign_paths)

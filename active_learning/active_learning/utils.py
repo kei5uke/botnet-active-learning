@@ -71,7 +71,7 @@ def file_management(main_path, history, size, size_name):
   with open(path, 'wb') as f:
     pickle.dump(history, f)
 
-def get_train_test(path, multiclass=True, test_size=3000):
+def get_train_test(path, multiclass=True, test_size=40000):
   df = pd.read_pickle(path)
   X = df.iloc[:,:20] # column 0-19: Explanatory var
   y = df.iloc[:,20] # column 20: Independent var

@@ -23,10 +23,9 @@ TEST_RUN = False
 SAMPLE_METHOD = 'uncert'
 TIME = datetime.now().strftime('%d-%m-%Y-%H:%M:%S')
 DF_FILENAME = '../../df_pickles/df_120000_21.pkl'
-MULTICLASS = True
-CLASS_NUM = 4
+MULTICLASS = False
+CLASS_NUM = 2
 RESULT_DEFAULT_PATH  = '../../result_pickles/'
-UCI_DF_PATH = '../../df_pickles/UCI_df_60030_21.pkl'
 
 if TEST_RUN == True:
   QUERY_NUM = 5
@@ -41,7 +40,7 @@ RESULT_DIR =  RESULT_DEFAULT_PATH + RESULT_DIR_NAME
 
 def main():
   print(f'Start Script: {datetime.now().strftime("%d-%m-%Y-%H:%M:%S")}')
-  X_train, X_test, y_train, y_test = get_train_test(path=DF_FILENAME, multiclass=MULTICLASS, uci_df_path=UCI_DF_PATH)
+  X_train, X_test, y_train, y_test = get_train_test(path=DF_FILENAME, multiclass=MULTICLASS)
   
   for init_size in INIT_SEED_PATTERN:
     for pool_size in POOL_SIZE_PATTERN:

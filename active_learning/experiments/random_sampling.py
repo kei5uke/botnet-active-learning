@@ -19,10 +19,9 @@ CLASS_NUM = g.CLASS_NUM
 # Shared Vars
 TEST_RUN = False
 TIME = datetime.now().strftime('%d-%m-%Y-%H:%M:%S')
-DF_FILENAME = '../../df_pickles/UCI_90000_23.pkl'
+DF_FILENAME = '../../df_pickles/N-BaIoT_90000_23.pkl'
 MULTICLASS = True
 RESULT_DEFAULT_PATH  = '../../result_pickles/'
-UCI_DF_PATH = ''
 
 if TEST_RUN == True:
   QUERY_NUM = 5
@@ -65,7 +64,7 @@ def random_learn(query_num, X_init, y_init, X_pool, y_pool, X_test, y_test):
 
 def main():
   print(f'Start Script: {datetime.now().strftime("%d-%m-%Y-%H:%M:%S")}')
-  X_train, X_test, y_train, y_test = get_train_test(DF_FILENAME, MULTICLASS, UCI_DF_PATH)
+  X_train, X_test, y_train, y_test = get_train_test(DF_FILENAME, MULTICLASS)
 
   for init_size in INIT_SEED_PATTERN:
     for pool_size in POOL_SIZE_PATTERN:

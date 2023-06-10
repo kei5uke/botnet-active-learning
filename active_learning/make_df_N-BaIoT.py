@@ -51,9 +51,9 @@ def make_df(path_list, n_rows):
 
 def main():
   # Paths
-  benign_paths = glob.glob("../dataset/UCI_Dataset/*/benign/*.csv")
-  mirai_paths = glob.glob("../dataset/UCI_Dataset/*/mirai/*.csv")
-  gafgyt_paths = glob.glob("../dataset/UCI_Dataset/*/gafgyt/*.csv")
+  benign_paths = glob.glob("../dataset/N-BaIoT_Dataset/*/benign/*.csv")
+  mirai_paths = glob.glob("../dataset/N-BaIoT_Dataset/*/mirai/*.csv")
+  gafgyt_paths = glob.glob("../dataset/N-BaIoT_Dataset/*/gafgyt/*.csv")
   # Make DFs
   benign_df = make_df(benign_paths, 2500)
   mirai_df = make_df(mirai_paths, 667)
@@ -81,7 +81,7 @@ def main():
     print("LABEL " + str(label) + " SIZE:" + str(df[df['label'] == label].count()[1]))
 
   # Save as pickle
-  save_name = f'../df_pickles/UCI_df_{df.shape[0]}_{df.shape[1]}_no_mod.pkl'
+  save_name = f'../df_pickles/N-BaIoT_df_{df.shape[0]}_{df.shape[1]}_no_mod.pkl'
   if os.path.exists(save_name):
     print(f'File {save_name} already exists')
     save_name += '.copy' 

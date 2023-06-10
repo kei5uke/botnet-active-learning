@@ -19,8 +19,8 @@ BATCH_PATTERN = g.BATCH_PATTERN
 # Shared Vars
 # US
 # CU
-# RESULT_PICKLE_DIR = 'uncert_5_times_15-03-2023-05:41:23'
-# GRAPH_TITLE = 'Ucertainty Sampling: Classification Uncertainty'
+RESULT_PICKLE_DIR = 'uncert_5_times_13-05-2023-03:15:45'
+GRAPH_TITLE = 'Ucertainty Sampling(Binary): Classification Uncertainty'
 # CM
 # RESULT_PICKLE_DIR = 'uncert_5_times_22-04-2023-20:47:09'
 # GRAPH_TITLE = 'N-BIoT\n Ucertainty Sampling: Classification Margin'
@@ -46,12 +46,12 @@ BATCH_PATTERN = g.BATCH_PATTERN
 # GRAPH_TITLE = f'Ranked Batch: {SKIP} Instances'
 
 # Random
-RESULT_PICKLE_DIR = 'random_5_times_22-04-2023-20:46:23'
-GRAPH_TITLE = 'N-BIoT Random Sampling'
+# RESULT_PICKLE_DIR = 'random_5_times_22-04-2023-20:46:23'
+# GRAPH_TITLE = 'N-BIoT Random Sampling'
 
 
 RESULT_PICKLE_PATH = f'../result_pickles/{RESULT_PICKLE_DIR}'
-GRAPH_SAVE_PATH = '../result' + f'/{RESULT_PICKLE_DIR}'
+GRAPH_SAVE_PATH = '../graphs' + f'/{RESULT_PICKLE_DIR}'
 
 def get_index_by_type(metric):
   index = None
@@ -105,15 +105,15 @@ def output_graph(pool_results, init_size, metric):
 
   pattern, label = get_pool_pattern_based_on_dir()
   # For random comparison
-  for i, (pool_result, size_pattern, color) in enumerate(zip(pool_results, pattern+[8000], colors)):
-  # for i, (pool_result, size_pattern, color) in enumerate(zip(pool_results, pattern, colors)):
-      if i == len(pool_results) - 1:
-        label= 'Random Sampling Pool '
-        color='magenta'
-      ax.plot(pool_result[:100], label=label+str(size_pattern), color=color, alpha=0.7)
+  # for i, (pool_result, size_pattern, color) in enumerate(zip(pool_results, pattern+[8000], colors)):
+  for i, (pool_result, size_pattern, color) in enumerate(zip(pool_results, pattern, colors)):
+      # if i == len(pool_results) - 1:
+      #   label= 'Random Sampling Pool '
+      #   color='magenta'
+      ax.plot(pool_result, label=label+str(size_pattern), color=color, alpha=0.7)
       ax.legend(loc=4)
 
-  ax.set_ylim(bottom=0.4, top=1.0)
+  ax.set_ylim(bottom=0.6, top=1.0)
   ax.grid(axis="x")
   ax.minorticks_on()
   ax.grid(which = "both", axis="y")
@@ -151,13 +151,13 @@ def make_graph(metric):
               result.append(tmp)
       
       # For Comparering Random
-      target = '../result_pickles/random_5_times_22-04-2023-20:46:23' + f'/{init_size}_init/8000_pool*'
-      print(target)
-      file_name = glob.glob(target)[0]
-      print(f'Loading {file_name} ...')
-      with open(file_name, 'rb') as f:
-          rs = pickle.load(f)
-          random_result = getDataByMetrc(rs, metric=metric.lower()) 
+      # target = '../result_pickles/random_5_times_22-04-2023-20:46:23' + f'/{init_size}_init/8000_pool*'
+      # print(target)
+      # file_name = glob.glob(target)[0]
+      # print(f'Loading {file_name} ...')
+      # with open(file_name, 'rb') as f:
+      #     rs = pickle.load(f)
+      #     random_result = getDataByMetrc(rs, metric=metric.lower()) 
 
       # When comparering Ranked Batch
       # averages = []
