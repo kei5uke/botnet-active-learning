@@ -1,0 +1,123 @@
+.
+├── MedBIoT_Dataset
+│   ├── malware_bulk
+│   │   ├── bashlite_mal_CC_all.csv
+│   │   ├── bashlite_mal_spread_all.csv
+│   │   ├── mirai_mal_CC_all.csv
+│   │   ├── mirai_mal_spread_all.csv
+│   │   └── torii_mal_all.csv
+│   └── normal_bulk
+│       ├── bashlite_leg.csv
+│       ├── mirai_leg.csv
+│       └── torii_leg.csv
+└── N-BaIoT_Dataset
+    ├── Danmini_Doorbell
+    │   ├── benign
+    │   │   ├── benign_traffic.csv
+    │   │   └── wget-log
+    │   ├── gafgyt
+    │   │   └── wget-log
+    │   └── mirai
+    │       ├── ack.csv
+    │       ├── scan.csv
+    │       ├── syn.csv
+    │       ├── udp.csv
+    │       └── udpplain.csv
+    ├── Ecobee_Thermostat
+    │   ├── benign
+    │   │   └── benign_traffic.csv
+    │   ├── gafgyt
+    │   │   ├── combo.csv
+    │   │   ├── junk.csv
+    │   │   ├── scan.csv
+    │   │   ├── tcp.csv
+    │   │   └── udp.csv
+    │   ├── list.txt
+    │   └── mirai
+    │       ├── ack.csv
+    │       ├── scan.csv
+    │       ├── syn.csv
+    │       ├── udp.csv
+    │       └── udpplain.csv
+    ├── Ennio_Doorbell
+    │   ├── benign
+    │   │   └── benign_traffic.csv
+    │   ├── gafgyt
+    │   │   ├── combo.csv
+    │   │   ├── junk.csv
+    │   │   ├── scan.csv
+    │   │   ├── tcp.csv
+    │   │   └── udp.csv
+    │   └── list.txt
+    ├── Philips_B120N10_Baby_Monitor
+    │   ├── benign
+    │   │   └── benign_traffic.csv
+    │   ├── gafgyt
+    │   │   ├── combo.csv
+    │   │   ├── junk.csv
+    │   │   ├── scan.csv
+    │   │   ├── tcp.csv
+    │   │   └── udp.csv
+    │   └── mirai
+    │       ├── ack.csv
+    │       ├── scan.csv
+    │       ├── syn.csv
+    │       ├── udp.csv
+    │       └── udpplain.csv
+    ├── Provision_PT_838_Security_Camera
+    │   ├── benign
+    │   │   └── benign_traffic.csv
+    │   ├── gafgyt
+    │   │   ├── combo.csv
+    │   │   ├── junk.csv
+    │   │   ├── scan.csv
+    │   │   ├── tcp.csv
+    │   │   └── udp.csv
+    │   ├── list.txt
+    │   └── mirai
+    │       ├── ack.csv
+    │       ├── scan.csv
+    │       ├── syn.csv
+    │       ├── udp.csv
+    │       └── udpplain.csv
+    ├── Samsung_SNH_1011_N_Webcam
+    │   ├── benign
+    │   │   └── benign_traffic.csv
+    │   ├── gafgyt
+    │   │   ├── combo.csv
+    │   │   ├── junk.csv
+    │   │   ├── scan.csv
+    │   │   ├── tcp.csv
+    │   │   └── udp.csv
+    │   └── list.txt
+    ├── SimpleHome_XCS7_1002_WHT_Security_Camera
+    │   ├── benign
+    │   │   └── benign_traffic.csv
+    │   ├── gafgyt
+    │   │   ├── combo.csv
+    │   │   ├── junk.csv
+    │   │   ├── scan.csv
+    │   │   ├── tcp.csv
+    │   │   └── udp.csv
+    │   └── mirai
+    │       ├── ack.csv
+    │       ├── scan.csv
+    │       ├── syn.csv
+    │       ├── udp.csv
+    │       └── udpplain.csv
+    └── SimpleHome_XCS7_1003_WHT_Security_Camera
+        ├── benign
+        │   └── benign_traffic.csv
+        ├── gafgyt
+        │   ├── combo.csv
+        │   ├── junk.csv
+        │   ├── scan.csv
+        │   ├── tcp.csv
+        │   └── udp.csv
+        ├── list.txt
+        └── mirai
+            ├── ack.csv
+            ├── scan.csv
+            ├── syn.csv
+            ├── udp.csv
+            └── udpplain.csv
