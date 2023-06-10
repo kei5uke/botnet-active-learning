@@ -20,11 +20,12 @@ def make_df(path_list):
 
     for filename in path_list:
         print(f'Loading {filename} ...')
-        df = pd.read_csv(filename,
-                         index_col=None,
-                         header=0,
-                         dtype=np.float32,
-                         skiprows=lambda x: x > 0 and random.random() >=FILE_INCLUDE_PERCENTAGE)
+        df = pd.read_csv(
+            filename,
+            index_col=None,
+            header=0,
+            dtype=np.float32,
+            skiprows=lambda x: x > 0 and random.random() >= FILE_INCLUDE_PERCENTAGE)
         if 'normal' in filename:
             df['label'] = 0
         elif 'bashlite' in filename:
@@ -33,11 +34,12 @@ def make_df(path_list):
             df['label'] = 2
         elif 'mirai' in filename:
             df['label'] = 3
-        
+
         li.append(df)
     frame = pd.concat(li, axis=0, ignore_index=True)
-    
+
     return frame
+
 
 def remove_corr(df, threshold):
     df_corr = df.corr()
@@ -76,6 +78,7 @@ def remove_corr(df, threshold):
 
     return df_corr.columns
 
+
 def stratify(df, counts):
     labels = sorted(df['label'].unique())
     li = []
@@ -86,33 +89,35 @@ def stratify(df, counts):
     frame = pd.concat(li, axis=0, ignore_index=True)
     return frame
 
+
 def main():
     malware_paths = glob.glob("../dataset/MedBIoT_Dataset/malware_bulk/*.csv")
     benign_paths = glob.glob("../dataset/MedBIoT_Dataset/normal_bulk/*.csv")
-    
+
     # Make a whole df
     df = make_df(malware_paths + benign_paths)
     # Stratify the size accordingly
     df = stratify(df, LABEL_RATIO)
     # Get columns with low-correlation
-    left_columns = remove_corr(df[df.columns[:-1]] , REMOVE_CORR_PER)
+    left_columns = remove_corr(df[df.columns[:-1]], REMOVE_CORR_PER)
     columns = np.append(left_columns, 'label')
     df = df[columns]
 
     print(f'SHAPE:{df.shape}')
     for label in df['label'].unique():
-      print("LABEL " + str(label) + " SIZE:" + str(df[df['label'] == label].count()[1]))
+        print("LABEL " + str(label) + " SIZE:" +
+              str(df[df['label'] == label].count()[1]))
 
     # Save as pickle
     save_name = f'../df_pickles/df_{df.shape[0]}_{df.shape[1]}.pkl'
     if os.path.exists(save_name):
-      print(f'File {save_name} already exists')
-      save_name += '.copy' 
-      df.to_pickle(save_name)
+        print(f'File {save_name} already exists')
+        save_name += '.copy'
+        df.to_pickle(save_name)
     else:
-      df.to_pickle(save_name)
+        df.to_pickle(save_name)
     print(f'Output path: {save_name}')
-    
-    
+
+
 if __name__ == "__main__":
     main()
