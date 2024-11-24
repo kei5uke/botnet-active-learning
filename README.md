@@ -2,9 +2,7 @@
 This repository contains code used for experiments in my BSc final thesis, “Multi-class Classification of Botnet Detection by Active Learning.”   
 
 ## Thesis in Nutshell 
-The process of labeling malware samples and network traffic is a costly endeavor in the cybersecurity industry.  
-This active learning framework enables the efficient creation of effective ML models using a limited amount of data.  
-This thesis focuses on benchmarking well-known query strategies to determine which strategy and parameters can achieve the best results with the fewest data samples.
+Labeling malware samples and network traffic is an expensive process in the cybersecurity industry. This active learning framework allows for the efficient development of effective machine learning models using a limited dataset. This thesis compares well-known query strategies to identify which strategy and parameters yield the best results while minimizing the required data samples.
 
 ### Figure 1. Cycle of Active Learning
 ![AL_cycle](https://github.com/kei5uke/botnet-active-learning/assets/33390452/01de7ca5-090d-4658-ab70-89e8f5a0ea36) 
